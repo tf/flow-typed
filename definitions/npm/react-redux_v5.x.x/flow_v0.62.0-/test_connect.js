@@ -411,3 +411,176 @@ function testOptions() {
   // $ExpectError wrong key
   connect(null, null, null, {wrongKey: true})(Com);
 }
+
+function testForbidsLiteralOfInvalidTypeInMapStateToProps() {
+  type Props = {
+    str: string
+  };
+
+  class Com extends React.Component<Props> {
+    render() {
+      return <div>{this.props.str}</div>;
+    }
+  }
+
+  type State = {num: number, str: string};
+
+  const mapStateToPropsWithLiteralOfInvalidType = (state: State) => {
+    return { // error
+      str: 123
+    }
+  };
+
+  connect(mapStateToPropsWithLiteralOfInvalidType)(Com);
+}
+
+function testForbidsStateProperyOfInvalidTypeInMapStateToProps() {
+  type Props = {
+    str: string
+  };
+
+  class Com extends React.Component<Props> {
+    render() {
+      return <div>{this.props.str}</div>;
+    }
+  }
+
+  type State = {num: number, str: string};
+
+  const mapStateToPropsWithStatePropertyOfInvalidType = (state: State) => {
+    // should fails
+    return {
+      str: state.num
+    }
+  };
+
+  connect(mapStateToPropsWithStatePropertyOfInvalidType)(Com);
+}
+
+function testForbidsSelectorWithInvalidReturnTypeInMapStateToProps() {
+  type Props = {
+    str: string
+  };
+
+  class Com extends React.Component<Props> {
+    render() {
+      return <div>{this.props.str}</div>;
+    }
+  }
+
+  type State = {num: number, str: string};
+
+  function selectorReturningNumber(state: State): number {
+    return state.num
+  }
+
+  const mapStateToPropsWithSelectorWithInvalidTypeReturnValue = (state: State) => {
+    // should fail
+    return {
+      str: selectorReturningNumber(state)
+    }
+  };
+
+  connect(mapStateToPropsWithSelectorWithInvalidTypeReturnValue)(Com);
+}
+
+function testForbidsUnknownPropInMapStateToProps() {
+  type Props = {
+    str: string
+  };
+
+  class Com extends React.Component<Props> {
+    render() {
+      return <div>{this.props.str}</div>;
+    }
+  }
+
+  type State = {num: number, str: string};
+
+  const mapStateToPropsWithUnknownProp = (state: State) => {
+    return { // error
+      str: state.str,
+      notThere: 123
+    }
+  };
+
+  connect(mapStateToPropsWithUnknownProp)(Com);
+}
+
+function testForbidsInvalidTypeInMapDispatchToProps() {
+  type Props = {
+    strToNumber: string => number
+  };
+
+  class Com extends React.Component<Props> {
+    render() {
+      return <div>{this.props.strToNumber("123")}</div>;
+    }
+  }
+
+  const mapDispatchToPropsWithInvalidType = (dispatch: *) => {
+    return { // error
+      strToNumber: (num: number) => 123
+    }
+  };
+
+  connect(null, mapDispatchToPropsWithInvalidType)(Com);
+}
+
+function testForbidsUnknownPropInMapDispatchToProps() {
+  type Props = {
+    strToNumber: string => number
+  };
+
+  class Com extends React.Component<Props> {
+    render() {
+      return <div>{this.props.strToNumber("123")}</div>;
+    }
+  }
+
+  const mapDispatchToPropsWithUnknownProp = (dispatch: *) => {
+    return { // error
+      strToNumber: (str: string) => 123,
+      notThere: (num: number) => 123
+    }
+  };
+
+  connect(null, mapDispatchToPropsWithUnknownProp)(Com);
+}
+
+function testForbidsInvalidTypeInMapDispatchToPropsObject() {
+  type Props = {
+    strToNumber: string => number
+  };
+
+  class Com extends React.Component<Props> {
+    render() {
+      return <div>{this.props.strToNumber("123")}</div>;
+    }
+  }
+
+  const mapDispatchToPropsWithInvalidType = {
+    strToNumber: (num: number) => 123
+  };
+
+  connect(null, mapDispatchToPropsWithInvalidType)(Com);
+}
+
+function testForbidsUnknownPropInMapDispatchToPropsObject() {
+  type Props = {
+    strToNumber: string => number
+  };
+
+  class Com extends React.Component<Props> {
+    render() {
+      return <div>{this.props.strToNumber("123")}</div>;
+    }
+  }
+
+  const mapDispatchToPropsWithUnknownProp = {
+    strToNumber: (str: string) => 123,
+    notThere: (num: number) => 123
+  };
+
+  connect(null, mapDispatchToPropsWithUnknownProp)(Com);
+}
