@@ -448,7 +448,6 @@ function testForbidsStateProperyOfInvalidTypeInMapStateToProps() {
   type State = {num: number, str: string};
 
   const mapStateToPropsWithStatePropertyOfInvalidType = (state: State) => {
-    // should fails
     return {
       str: state.num
     }
@@ -475,7 +474,6 @@ function testForbidsSelectorWithInvalidReturnTypeInMapStateToProps() {
   }
 
   const mapStateToPropsWithSelectorWithInvalidTypeReturnValue = (state: State) => {
-    // should fail
     return {
       str: selectorReturningNumber(state)
     }
